@@ -3,18 +3,25 @@ import java.awt.Color
 import scala.Array._
 
 object Pixel {
-    def shift(pixels: Array[Array[Color]]): Array[Array[Color]] = {
-        val width: Int = pixels.length
-        val height: Int = pixels(0).length
-        val pixelShift: Array[Array[Color]] = ofDim[Color](width, height)
+    def pixelMap(pixelFunc: Color => Color, pixelArray: Array[Array[Color]]): Array[Array[Color]] = {
+        val width: Int = pixelArray.length
+        val height: Int = pixelArray(0).length
+        val pixelArrayMapped: Array[Array[Color]] = ofDim[Color](width, height)
 
         for(j <- 0 until height) {
             for(i <- 0 until width) {
-                val col = pixels(i)(j)
-                pixelShift(i)(j) = new Color(col.getBlue, col.getRed, col.getGreen, col.getAlpha)
+                pixelArrayMapped(i)(j) = pixelFunc(pixelArray(i)(j))
             }
         }
-        pixelShift
+        pixelArrayMapped
+    }
+
+    def shift(pixels: Array[Array[Color]]): Array[Array[Color]] = {
+        val shift = (colour: Color) => new Color(colour.getBlue,
+                                                 colour.getRed,
+                                                 colour.getGreen,
+                                                 colour.getAlpha)
+        pixelMap(shift, pixels)
     }
 
     def slide(pixels: Array[Array[Color]]): Array[Array[Color]] = {
@@ -31,35 +38,20 @@ object Pixel {
     }
 
     def halfway(pixels: Array[Array[Color]]): Array[Array[Color]] = {
-        val width: Int = pixels.length
-        val height: Int = pixels(0).length
-        val pixelHalf: Array[Array[Color]] = ofDim[Color](width, height)
-
-        for(j <- 0 until height) {
-            for(i <- 0 until width) {
-                val col = pixels(i)(j)
-                val cols = Array(col.getRed, col.getGreen, col.getBlue)
-                val colsHalf = new Array[Int](3)
-                val len = cols.length
-                for(x <- 0 until len) {
-                    colsHalf(x) = cols(x) - (cols(x) - cols((x - 1 + len) % len))/2
-                }
-                pixelHalf(i)(j) = new Color(colsHalf(0), colsHalf(1), colsHalf(2))
+        val half = (colour: Color) => {
+            val colourArray = Array(colour.getRed, colour.getGreen, colour.getBlue)
+            val colourArrayHalf = new Array[Int](3)
+            val length = colourArray.length
+            for(x <- 0 until length) {
+                colourArrayHalf(x) = colourArray(x) - (colourArray(x) - colourArray((x - 1 + length) % length))/2
             }
+            new Color(colourArrayHalf(0), colourArrayHalf(1), colourArrayHalf(2), colour.getAlpha)
         }
-        pixelHalf
+        pixelMap(half, pixels)
     }
 
     def perms(pixels: Array[Array[Color]], intPerm: Vector[Int]): Array[Array[Color]] = {
-        val width: Int = pixels.length
-        val height: Int = pixels(0).length
-        val pixelPerm: Array[Array[Color]] = ofDim[Color](width, height)
-
-        for(j <- 0 until height) {
-            for(i <- 0 until width) {
-                pixelPerm(i)(j) = Colour.permPixel(pixels(i)(j), intPerm)
-            }
-        }
-        pixelPerm
+        val perm = (colour: Color) => Colour.permPixel(colour, intPerm)
+        pixelMap(perm, pixels)
     }
 }
