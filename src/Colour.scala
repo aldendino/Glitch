@@ -34,4 +34,11 @@ object Colour {
             throw new Exception("Perm list must be 3 elements.")
         }
     }
+
+    def average(colour1: Color, colour2: Color): Color = {
+        val averageInt = (first: Int, second: Int) => (first + second)/2
+        new Color(averageInt(colour1.getRed, colour2.getRed),
+                  averageInt(colour1.getGreen, colour2.getGreen),
+                  averageInt(colour1.getBlue, colour2.getBlue))
+    }
 }

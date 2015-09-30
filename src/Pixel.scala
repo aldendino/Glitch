@@ -50,6 +50,23 @@ object Pixel {
         pixelMap(half, pixels)
     }
 
+    def average(pixels1: Array[Array[Color]], pixels2: Array[Array[Color]]): Array[Array[Color]] = {
+        val width1: Int = pixels1.length
+        val height1: Int = pixels1(0).length
+        val width2: Int = pixels2.length
+        val height2: Int = pixels2(0).length
+        val width3: Int = Math.min(width1, width2)
+        val height3: Int = Math.min(height1, height2)
+        val pixelAverage: Array[Array[Color]] = ofDim[Color](width3, height3)
+
+        for(j <- 0 until height3) {
+            for(i <- 0 until width3) {
+                pixelAverage(i)(j) = Colour.average(pixels1(i)(j), pixels2(i)(j))
+            }
+        }
+        pixelAverage
+    }
+
     def perms(pixels: Array[Array[Color]], intPerm: Vector[Int]): Array[Array[Color]] = {
         val perm = (colour: Color) => Colour.permPixel(colour, intPerm)
         pixelMap(perm, pixels)
