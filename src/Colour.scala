@@ -41,4 +41,20 @@ object Colour {
                   averageInt(colour1.getGreen, colour2.getGreen),
                   averageInt(colour1.getBlue, colour2.getBlue))
     }
+
+    def average(colours: List[Color]): Color = {
+        var redSum: Int = 0
+        var greenSum: Int = 0
+        var blueSum: Int = 0
+        val colourCount: Double = colours.length
+        for(colour <- colours) {
+            redSum += colour.getRed
+            greenSum += colour.getGreen
+            blueSum += colour.getBlue
+        }
+        val redAvg: Int = (redSum / colourCount).toInt
+        val greenAvg: Int = (greenSum / colourCount).toInt
+        val blueAvg: Int = (blueSum / colourCount).toInt
+        new Color(redAvg, greenAvg, blueAvg)
+    }
 }

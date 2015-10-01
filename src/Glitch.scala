@@ -2,7 +2,8 @@
 object Glitch {
     def main(args: Array[String]) {
 
-        glitch2(args, avg)
+        //glitch2(args, avg)
+        glitch1(args, dig)
 
         //val pixels = IO.importImage(in)
         
@@ -28,6 +29,8 @@ object Glitch {
 
         IO.checkFile(in)
         IO.checkDir(out)
+
+        func(in, out)
     }
 
     def glitch2(args: Array[String], func: (String, String, String) => Unit) {
@@ -56,6 +59,14 @@ object Glitch {
         val out3 = PathUtils.appendFileToPath(out, "out.jpg")
 
         IO.exportImage(out3, pixel3, "jpg")
+    }
+
+    def dig(in: String, out: String): Unit = {
+        println(in + ":" + out)
+        val pixels = IO.importImage(in)
+        val pixelsOut = Pixel.digitize(pixels, 16, 16)
+        val stringOut = PathUtils.appendFileToPath(out, "out.jpg")
+        IO.exportImage(stringOut, pixelsOut, "jpg")
     }
 }
 

@@ -1,4 +1,5 @@
 import java.awt.Color
+import java.util.Random
 
 import scala.Array._
 
@@ -65,6 +66,40 @@ object Pixel {
             }
         }
         pixelAverage
+    }
+
+    def digitize(pixels: Array[Array[Color]], horizontalSplit: Int, verticalSplit: Int): Array[Array[Color]] = {
+        val width: Int = pixels.length
+        val height: Int = pixels(0).length
+
+        if(width < horizontalSplit || height < verticalSplit) return pixels
+
+        val pixelDigital: Array[Array[Color]] = pixelMap((pixel: Color) => pixel, pixels)
+
+        val horizontalSectionSize = width / horizontalSplit
+        val verticalSectionSize = height / verticalSplit
+        val random = new Random
+
+        for(j <- 0 until verticalSplit) {
+            for(i <- 0 until horizontalSplit) {
+                val isDigitized = random.nextBoolean()
+                if(isDigitized) {
+                    var colourList = List[Color]()
+                    for (l <- (verticalSectionSize * j) until (verticalSectionSize * (j + 1))) {
+                        for (k <- (horizontalSectionSize * i) until (horizontalSectionSize * (i + 1))) {
+                            colourList = colourList :+ pixels(k)(l)
+                        }
+                    }
+                    val digitalColour = Colour.average(colourList)
+                    for (l <- (verticalSectionSize * j) until (verticalSectionSize * (j + 1))) {
+                        for (k <- (horizontalSectionSize * i) until (horizontalSectionSize * (i + 1))) {
+                            pixelDigital(k)(l) = digitalColour
+                        }
+                    }
+                }
+            }
+        }
+        pixelDigital
     }
 
     def perms(pixels: Array[Array[Color]], intPerm: Vector[Int]): Array[Array[Color]] = {
