@@ -1,3 +1,5 @@
+import java.io.File
+import javax.swing.JOptionPane
 
 object Glitch {
     def main(args: Array[String]) {
@@ -65,8 +67,21 @@ object Glitch {
         println(in + ":" + out)
         val pixels = IO.importImage(in)
         val pixelsOut = Pixel.digitize(pixels, 25, 25, 0.25)
-        val stringOut = PathUtils.appendFileToPath(out, "out.jpg")
-        IO.exportImage(stringOut, pixelsOut, "jpg")
+        val filename: String = JOptionPane.showInputDialog(null, "Enter the name of the output file", "Output file", JOptionPane.PLAIN_MESSAGE, null, null, "out.jpg") match {
+            case string: String => string
+            case _ => null
+        }
+        if(filename != null) {
+            println(filename)
+            val stringOut = PathUtils.appendFileToPath(out, filename)
+            var result = JOptionPane.YES_OPTION
+            if(new File(stringOut).isFile) {
+                result = JOptionPane.showConfirmDialog(null, "Would you like to overwrite \"" + stringOut + "\"?", "File already exists!", JOptionPane.YES_NO_OPTION)
+            }
+            if(result == JOptionPane.YES_OPTION) {
+                IO.exportImage(stringOut, pixelsOut, "jpg")
+            }
+        }
     }
 }
 
