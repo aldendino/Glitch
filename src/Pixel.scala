@@ -68,22 +68,22 @@ object Pixel {
         pixelAverage
     }
 
-    def digitize(pixels: Array[Array[Color]], horizontalSplit: Int, verticalSplit: Int): Array[Array[Color]] = {
+    def digitize(pixels: Array[Array[Color]], horizontalSplit: Int, verticalSplit: Int, percentDigital: Double): Array[Array[Color]] = {
         val width: Int = pixels.length
         val height: Int = pixels(0).length
 
         if(width < horizontalSplit || height < verticalSplit) return pixels
+        if(percentDigital < 0.0 || percentDigital >= 1.0)
+            throw new IllegalArgumentException("Percentage must be between 0.0 and 1.0")
 
         val pixelDigital: Array[Array[Color]] = pixelMap((pixel: Color) => pixel, pixels)
 
         val horizontalSectionSize = width / horizontalSplit
         val verticalSectionSize = height / verticalSplit
-        val random = new Random
 
         for(j <- 0 until verticalSplit) {
             for(i <- 0 until horizontalSplit) {
-                val isDigitized = random.nextBoolean()
-                if(isDigitized) {
+                if(Math.random < percentDigital) {
                     var colourList = List[Color]()
                     for (l <- (verticalSectionSize * j) until (verticalSectionSize * (j + 1))) {
                         for (k <- (horizontalSectionSize * i) until (horizontalSectionSize * (i + 1))) {

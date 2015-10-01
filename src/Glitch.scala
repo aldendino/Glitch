@@ -64,7 +64,7 @@ object Glitch {
     def dig(in: String, out: String): Unit = {
         println(in + ":" + out)
         val pixels = IO.importImage(in)
-        val pixelsOut = Pixel.digitize(pixels, 16, 16)
+        val pixelsOut = Pixel.digitize(pixels, 25, 25, 0.25)
         val stringOut = PathUtils.appendFileToPath(out, "out.jpg")
         IO.exportImage(stringOut, pixelsOut, "jpg")
     }
